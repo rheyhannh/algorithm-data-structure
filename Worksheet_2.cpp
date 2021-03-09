@@ -118,6 +118,7 @@ struct DoubleLinkedList{;
             else{
                 while(helper != NULL){
                     if(helper->username == username_before){
+                        cout << "\nBerhasil menambahkan Data dengan Username '" << temp->username << "'" << " sebelum Data '" << username_before << "'" << endl;
                         temp->prev = helper->prev;
                         temp->next = helper;
                         helper->prev->next = temp;
@@ -135,7 +136,7 @@ struct DoubleLinkedList{;
     void remove_first(){
         ListNode *temp = head;
         if(is_empty()){
-            cout << "\nLinked List Kosong" << endl;
+            cout << "\nLinked List Masih Kosong" << endl;
         }
         else{
             if(head == tail){
@@ -181,7 +182,7 @@ struct DoubleLinkedList{;
         int counter = 0;
         // Mencegah bug saat linked list masih kosong
         if(is_empty()){
-            cout << "\nLinked List Kosong" << endl;
+            cout << "\nLinked List Masih Kosong" << endl;
         }
         // Mencegah bug saat index lebih besar dari jumlah data atau index bernilai negatif
         else if(index > size - 1 || index < 0){
@@ -302,7 +303,7 @@ struct DoubleLinkedList{;
             cout << "\nLinked List Masih Kosong" << endl;
         }
         else{
-            cout << "\n______Single Linked List [Data User Forum]______ " << endl;
+            cout << "\n______Double Linked List [Data User Forum]______ " << endl;
             cout << "______________[TOTAL DATA = " << get_size() << "]______________" << endl;
             int index = 0;
             while(temp != NULL){
@@ -320,7 +321,7 @@ struct DoubleLinkedList{;
             cout << "\nLinked List Masih Kosong" << endl;
         }
         else{
-            cout << "\n______Single Linked List [Data User Forum]______ " << endl;
+            cout << "\n______Double Linked List [Data User Forum]______ " << endl;
             cout << "______________[TOTAL DATA = " << get_size() << "]______________" << endl;
             int index = 0;
             while(temp != NULL){
