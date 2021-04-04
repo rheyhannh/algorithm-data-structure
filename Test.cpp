@@ -134,8 +134,9 @@ struct QueueLinkedList{
                         while(helper2 != NULL){
                             if(helper2->status == "BUKAN_LANSIA" && helper2 != rear){
                                 tmp->next = helper2->next;
-                                tmp->prev = helper2;
+                                helper2->next->prev = tmp;
                                 helper2->next = tmp;
+                                tmp->prev = helper2;
                                 pasien_Increment(status);
                                 enqueue_RuangTunggu(helper->name, helper->age, helper->bp, helper->status, 0);
                                 // Ganti Belakang
@@ -384,8 +385,8 @@ struct QueueLinkedList{
 				print_DaftarAntre();
 				print_DaftarTunggu();
                 // cout << "\nPasien Lansia : " << get_PasienLansia();
-                // cout << "\nPasien Non Lansia : " << get_PasienBukanLansia() << endl;
-                // cout << "\nTotal Pasien : " << get_totalPasien() << endl;
+                // cout << "Pasien Non Lansia : " << get_PasienBukanLansia() << endl;
+                // cout << "Total Pasien : " << get_totalPasien() << endl;
                 // cout << endl;
         }
         else{
@@ -401,7 +402,7 @@ int main(int argc, char** argv) {
 	// Perlu Inisiasilasi Awal Ukuran Ruang Antre Variabel (M) dengan Batas 1 =< M =< 1000
 	// cin >> ukuran;
 	// cin.ignore();
-	qll.set_size_RuangAntre(2);
+	qll.set_size_RuangAntre(10);
 	qll.init();
 	int x = 0;
     	string inputs; // Variabel yang dimasukan user pertama kali (contoh: BARU Yana 55 22)
