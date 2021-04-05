@@ -51,8 +51,14 @@ struct QueueLinkedList{
         front = rear = NULL;
 	}
 
-	void set_size_RuangAntre(int x){
-		size = x;
+    void set_size_RuangAntre(int x){
+		if(x >= 1 && x <= 1000){
+            size = x;
+        }
+        else{
+            // Size Terlalu Besar atau Terlalu Kecil
+            exit(0);
+        }
 	}
 	
 	int get_size_RuangAntre(){
@@ -423,9 +429,89 @@ struct QueueLinkedList{
         }
     }
 
-	void skip(){
-		// isi
-	}
+    void skip(string x){
+        Node *p = front;
+        while(p != NULL){
+            if(p->name == x){
+                if(p->status=="LANSIA"){
+                    enqueue_RuangTunggu(p->name, p->age, p->bp, p->status, 1);
+                    break;
+                } else {
+                    enqueue_RuangTunggu(p->name, p->age, p->bp, p->status, 0);
+                    break;
+                }
+            }
+            p = p->prev;
+        }
+        dequeue_nama(x);
+    }
+
+    void gantiUkuran(int N){
+        string namaRef[1000];
+        int ageRef[1000];
+        int bpRef[1000];
+        string statusRef[1000];
+        int oldSize = size;
+        int selisihSize = 0;
+        int selisihSize2 = 0;
+        int ab = 0;
+        int loop;
+        if(oldSize == N){
+            // Ukuran Sama Tidak Ada Yang Berubah
+        }
+        else if(N > oldSize){
+            set_size_RuangAntre(N);
+            selisihSize = N - oldSize;
+            for(int x = 0; x != selisihSize; x++){
+                dequeueManager();
+            }
+            cout << "SUKSES UBAH " << oldSize << " " << N << endl;
+        }
+        else{
+            set_size_RuangAntre(N);
+            Node *tmp = front;
+            loop = N;
+            selisihSize = (N - oldSize) * -1;
+            selisihSize2 = selisihSize;
+            // Loop Mencari Node Yang Ingin Dipindahkan
+            while(loop != 0){
+                tmp = tmp->prev;
+                loop--;
+            }
+            // Loop Menyimpan Sementara Data Yang Ingin Dipindahkan ke Ruang Tunggu di Array
+            while(selisihSize != 0){
+                // Jika tmp Bernilai NULL, Maka Loop Berhenti Untuk Mencegah Bug Saat List Tidak Full Tapi Dikecilkan
+                // Contoh A <- B <- C <- D <- E (Size = 7) -> Diubah Menjadi Size = 5
+                // Sehingga Program Hanya Memindahkan D dan E saja Tanpa Harus Loop Hingga Akhir
+                if(tmp == NULL){
+                    break;
+                }
+                namaRef[ab] = tmp->name;
+                ageRef[ab] = tmp->age;
+                bpRef[ab] = tmp->bp;
+                statusRef[ab] = tmp->status;
+                tmp = tmp->prev;
+                selisihSize--;
+                ab++;
+            }
+            // Loop Untuk Dequeue_Nama Berdasarkan Node Yang Ingin Dipindahkan
+            for(int yz = 0; yz != ab; yz++){
+                dequeue_nama(namaRef[yz]);
+            }
+            // Loop Untuk Enqueue Kembali Ke Ruang Tunggu Berdasarkan Node Yang Ingin Dipindahkan
+            for(int xy = 0; xy != ab; xy++){
+                if(statusRef[xy] == "LANSIA"){
+                    pasien_Increment(statusRef[xy],"ruangTunggu");
+                    enqueue_RuangTunggu(namaRef[xy], ageRef[xy], bpRef[xy], statusRef[xy], 1);
+                }
+                else{
+                    pasien_Increment(statusRef[xy],"ruangTunggu"); 
+                    enqueue_RuangTunggu(namaRef[xy], ageRef[xy], bpRef[xy], statusRef[xy], 0);                  
+                }
+            }
+            cout << "SUKSES UBAH " << oldSize << " " << N << endl;
+        }
+    }
 
 	void print_Antre(string nama, string status){
 		cout << "ANTRE " << nama << " " << status;
@@ -515,8 +601,8 @@ struct QueueLinkedList{
             	}
             	else{
                 	N = stoi(inputPerKata[1]); // Casting String ke Integer (Butuh C++ Versi 11 atau Lebih)
-                	cout << "UKURAN MENJADI " << N << endl; // Contoh output aja
                 	// Panggil Fungsi Pengganti Ukuran Ruang Antre Sebesar N (Parameter : N)
+                    gantiUkuran(N);
             	}
         }
         else if(PERINTAH == "SELESAI"){
@@ -555,9 +641,11 @@ struct QueueLinkedList{
             	}
             	else{
                 	NAMA_PENERIMA_VAKSIN = inputPerKata[1];
-                	cout << "SKIP " << NAMA_PENERIMA_VAKSIN << endl; // Contoh output aja
+                	// cout << "SKIP " << NAMA_PENERIMA_VAKSIN << endl; // Contoh output aja
                 	// Panggil Fungsi Untuk Memindahkan Pasien Berdasarkan Nama dari Ruang Antre ke Ruang Tunggu (Parameter : NAMA_PENERIMA_VAKSIN)
-            	}
+                    skip(NAMA_PENERIMA_VAKSIN);
+                    cout << "SKIP SUKSES" << endl;
+                }
 		}
 		else if(PERINTAH == "STATUS"){
             	// cout << "STATUS ANTRE DAN TUNGGU" << endl; // Contoh output aja
@@ -569,6 +657,7 @@ struct QueueLinkedList{
                 cout << "Total Pasien : " << get_totalPasien() << endl;
                 cout << "Pasien Dalam Antre : " << get_totalPasienAntre() << endl;
                 cout << "Pasien Dalam Tunggu : " << get_totalPasienTunggu() << endl;
+                cout << "Size Antre : " << get_size_RuangAntre();
                 cout << endl;
         }
         else{
@@ -584,7 +673,7 @@ int main(int argc, char** argv) {
 	// Perlu Inisiasilasi Awal Ukuran Ruang Antre Variabel (M) dengan Batas 1 =< M =< 1000
 	// cin >> ukuran;
 	// cin.ignore();
-	qll.set_size_RuangAntre(1);
+	qll.set_size_RuangAntre(7);
 	qll.init();
 	int x = 0;
     	string inputs; // Variabel yang dimasukan user pertama kali (contoh: BARU Yana 55 22)
